@@ -21,45 +21,87 @@ std::vector<std::string> split(const char* str, const char* delim){
     return result;
 }
 
+const int statSize = 2048;
 
-double statNoRTK[2048];
-int indexNoRTK = 0;
-int filledNoRTK = 0;
-double statRTK[2048];
-int indexRTK = 0;
-int filledRTK = 0;
+double statNoRTKLat[statSize];
+int indexNoRTKLat = 0;
+int filledNoRTKLat = 0;
+
+double statNoRTKLong[statSize];
+int indexNoRTKLong = 0;
+int filledNoRTKLong = 0;
+
+double statRTKLat[statSize];
+int indexRTKLat = 0;
+int filledRTKLat = 0;
+
+double statRTKLong[statSize];
+int indexRTKLong = 0;
+int filledRTKLong = 0;
 
 bool hasRTK = false;
 
 void calculateStatistics(){
-    double totalNoRTK = 0;
-    for (double num : statNoRTK) {
-        totalNoRTK += num;
+    double totalNoRTKLat = 0;
+    for (double num : statNoRTKLat) {
+        totalNoRTKLat += num;
     }
-    double meanNoRTK = totalNoRTK/filledNoRTK;
+    double meanNoRTKLat = totalNoRTKLat/filledNoRTKLat;
 
-    double stdDevNoRTK = 0;
-    for (int i = 0; i < filledNoRTK; i++) {
-        stdDevNoRTK += std::pow(meanNoRTK - statNoRTK[i], 2);
+    double stdDevNoRTKLat = 0;
+    for (int i = 0; i < filledNoRTKLat; i++) {
+        stdDevNoRTKLat += std::pow(meanNoRTKLat - statNoRTKLat[i], 2);
     }
-    stdDevNoRTK /= filledNoRTK;
-    stdDevNoRTK = std::sqrt(stdDevNoRTK);
-    std::cout << "NoRTK Stats. Data Points: " << filledNoRTK << " Mean: " << meanNoRTK << " Std Dev: " << stdDevNoRTK << "\n";
+    stdDevNoRTKLat /= filledNoRTKLat;
+    stdDevNoRTKLat = std::sqrt(stdDevNoRTKLat);
+    std::cout << "\nNoRTKLat Stats. Data Points: " << filledNoRTKLat << " Mean: " << meanNoRTKLat << " Std Dev: " << stdDevNoRTKLat << "\n";
 
-    double totalRTK = 0;
-    for (double num : statRTK) {
-        totalRTK += num;
+
+    double totalNoRTKLong = 0;
+    for (double num : statNoRTKLong) {
+        totalNoRTKLong += num;
     }
-    double meanRTK = totalRTK/filledRTK;
+    double meanNoRTKLong = totalNoRTKLong/filledNoRTKLong;
 
-    double stdDevRTK = 0;
-    for (int i = 0; i < filledRTK; i++) {
-        stdDevRTK += std::pow(meanRTK - statRTK[i], 2);
+    double stdDevNoRTKLong = 0;
+    for (int i = 0; i < filledNoRTKLong; i++) {
+        stdDevNoRTKLong += std::pow(meanNoRTKLong - statNoRTKLong[i], 2);
     }
-    stdDevRTK /= filledRTK;
-    stdDevRTK = std::sqrt(stdDevRTK);
-    std::cout << "RTK Stats. Data Points: " << filledRTK << " Mean: " << meanRTK << " Std Dev: " << stdDevRTK << "\n";
+    stdDevNoRTKLong /= filledNoRTKLong;
+    stdDevNoRTKLong = std::sqrt(stdDevNoRTKLong);
+    std::cout << "NoRTKLong Stats. Data Points: " << filledNoRTKLong << " Mean: " << meanNoRTKLong << " Std Dev: " << stdDevNoRTKLong << "\n";
 
+
+    double totalRTKLat = 0;
+    for (double num : statRTKLat) {
+        totalRTKLat += num;
+    }
+    double meanRTKLat = totalRTKLat/filledRTKLat;
+
+    double stdDevRTKLat = 0;
+    for (int i = 0; i < filledRTKLat; i++) {
+        stdDevRTKLat += std::pow(meanRTKLat - statRTKLat[i], 2);
+    }
+    stdDevRTKLat /= filledRTKLat;
+    stdDevRTKLat = std::sqrt(stdDevRTKLat);
+    std::cout << "RTKLat Stats. Data Points: " << filledRTKLat << " Mean: " << meanRTKLat << " Std Dev: " << stdDevRTKLat << "\n";
+
+
+    double totalRTKLong = 0;
+    for (double num : statRTKLong) {
+        totalRTKLong += num;
+    }
+    double meanRTKLong = totalRTKLong/filledRTKLong;
+
+    double stdDevRTKLong = 0;
+    for (int i = 0; i < filledRTKLong; i++) {
+        stdDevRTKLong += std::pow(meanRTKLong - statRTKLong[i], 2);
+    }
+    stdDevRTKLong /= filledRTKLong;
+    stdDevRTKLong = std::sqrt(stdDevRTKLong);
+    std::cout << "RTKLong Stats. Data Points: " << filledRTKLong << " Mean: " << meanRTKLong << " Std Dev: " << stdDevRTKLong << "\n";
+
+    std::cout << "\n";
 }
 
 
@@ -123,46 +165,63 @@ int main() {
                 std::vector<std::string> values = split(result, ",");
                 if (values.size() >= 15) {
                     if (values.at(6).size() > 0) {
-                        if (values.at(6) == "5") {
+                        if (values.at(6) == "4") {
                             hasRTK = true;
+                            std::cout << "\nRTK Fix\n";
+                        } else if (values.at(6) == "5") {
+                            std::cout << "\nFLOAT\n";
+                            hasRTK = false;
+                        } else if (values.at(6) == "3") {
+                            std::cout << "\nPPS Fix\n";
+                            hasRTK = false;
+                        } else if (values.at(6) == "2") {
+                            std::cout << "\nDifferential\n";
+                            hasRTK = false;
                         } else {
                             hasRTK = false;
                         }
                     }
                     if (values.at(2).size() > 3) {
                         double degrees = std::stod(values.at(2).substr(0, 2)) + (std::stod(values.at(2).substr(2))/60.);
+                        
                         if (hasRTK){
-                            filledRTK %= sizeof(statRTK);
-                            statRTK[filledRTK] = degrees;
-                            filledRTK ++;
+                            if (filledRTKLat < 2048){
+                                filledRTKLat++;
+                            }
+                            indexRTKLat %= statSize;
+                            statRTKLat[indexRTKLat] = degrees;
+                            indexRTKLat ++;
                         } else {
-                            filledNoRTK %= sizeof(statNoRTK);
-                            statNoRTK[filledNoRTK] = degrees;
-                            filledNoRTK ++;
+                            if (filledNoRTKLat < 2048) {
+                                filledNoRTKLat ++;
+                            }
+                            indexNoRTKLat %= statSize;
+                            statNoRTKLat[indexNoRTKLat] = degrees;
+                            indexNoRTKLat ++;
                         }
-                        calculateStatistics();
+                        
                         std::cout << values.at(2).substr(0, 2) << " " << values.at(2).substr(2) << " " << values.at(3) << std::endl;
                     }
                     if (values.at(4).size() > 3) {
                         double degrees = std::stod(values.at(4).substr(0, 3)) + (std::stod(values.at(4).substr(3))/60.);
-                        // if (hasRTK){
-                        //     if (filledNoRTK < sizeof(statNoRTK)){
-                        //         filledNoRTK ++;
-                        //     }
-                        //     indexNoRTK %= sizeof(statRTK);
-                        //     statRTK[indexNoRTK] = degrees;
-                        //     indexNoRTK ++;
-                        // } else {
-                        //     if (filledRTK < sizeof(statRTK)) {
-                        //         filledRTK ++;
-                        //     }
-                        //     indexNoRTK %= sizeof(statNoRTK);
-                        //     statNoRTK[indexNoRTK] = degrees;
-                        //     indexNoRTK ++;
-                        // }
-                        // calculateStatistics();
+                        if (hasRTK){
+                            if (filledRTKLong < 2048){
+                                filledRTKLong++;
+                            }
+                            indexRTKLong %= statSize;
+                            statRTKLong[indexRTKLong] = degrees;
+                            indexRTKLong ++;
+                        } else {
+                            if (filledNoRTKLong < 2048) {
+                                filledNoRTKLong ++;
+                            }
+                            indexNoRTKLong %= statSize;
+                            statNoRTKLong[indexNoRTKLong] = degrees;
+                            indexNoRTKLong ++;
+                        }
                         std::cout << values.at(4).substr(0, 3) << " " << values.at(4).substr(3) << " " << values.at(5) << std::endl;
                     }
+                    calculateStatistics();
                 }                
             }
 

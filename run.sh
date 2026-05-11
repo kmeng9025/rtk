@@ -18,7 +18,7 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 ./str2str \
-  -in ntrip://kmeng90251@gmail.com:none@3.143.243.81:2101/Pennovation \
+  -in ntrip://kmeng90251@gmail.com:none@3.143.243.81:2101/lptg-ringrocks-01 \
   -out serial://ttyS0:115200:8:n:1:off &
 
 NTRIP_PID=$!
